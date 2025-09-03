@@ -1,0 +1,30 @@
+name: Build Vial-QMK firmware for RP2040
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli
+
+    steps:
+      - name: Checkout your keymap
+        uses: actions/checkout@v4
+
+      - name: Clone vial-qmk
+        run: git clone --depth 1 https://github.com/vial-kb/vial-qmk.git vial-qmk
+
+      - name: Copy your keymap to vial-qmk
+        run: |
+          cp -r ./ vial-qmk/keyboards/crkbd/keymaps/halaku-crkbd
+
+      - name: Build for RP2040
+        run: |
+          cd vial-qmk
+          qmk compile -c -kb crkbd/rev1 -km halaku-crkbd -e CONVERT_TO=elite_pi
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware_rp2040
+          path: vial-qmk/.build/crkbd_rev1_halaku-crkbd_elite_pi.uf2
