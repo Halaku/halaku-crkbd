@@ -21,4 +21,4 @@ https://config.qmk.fm/#/crkbd/rev1/LAYOUT_split_3x6_3
 
 Convert the edited JSON keymap back to a C keymap file with:
 
-`qmk json2c ~/Downloads/keymap.json -o ~/vial-qmk/keyboards/crkbd/keymaps/vial/keymap.c`
+`qmk json2c ~/Downloads/keymap.json -o ~/vial-qmk/keyboards/crkbd/keymaps/halaku-crkbd/keymap.c`
