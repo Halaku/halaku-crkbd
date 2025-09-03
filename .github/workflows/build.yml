@@ -14,9 +14,14 @@ jobs:
       - name: Clone vial-qmk
         run: git clone --depth 1 https://github.com/vial-kb/vial-qmk.git vial-qmk
 
-      - name: Copy your keymap to vial-qmk
+      - name: Copy all files except .github to vial-qmk keymap
         run: |
-          cp -r ./ vial-qmk/keyboards/crkbd/keymaps/halaku-crkbd
+          mkdir -p vial-qmk/keyboards/crkbd/keymaps/halaku-crkbd
+          for item in *; do
+            if [ "$item" != ".github" ] && [ "$item" != "vial-qmk" ]; then
+              cp -r "$item" vial-qmk/keyboards/crkbd/keymaps/halaku-crkbd/
+            fi
+          done
 
       - name: Build for RP2040
         run: |
