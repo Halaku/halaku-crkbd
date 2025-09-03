@@ -53,4 +53,4 @@ jobs:
           tag_name: "latest"
           files: artifact/crkbd_rev1_halaku-crkbd_elite_pi.uf2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.HAL_KBD }}
