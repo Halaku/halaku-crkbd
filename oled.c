@@ -7,7 +7,7 @@
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (!is_keyboard_master()) {
-        return OLED_ROTATION_180; // flips the display 180 degrees if offhand
+        return OLED_ROTATION_180;
     }
     return OLED_ROTATION_270;
 }
@@ -47,36 +47,31 @@ static void oled_render_layer_state(void) {
     }
 }
 
-#define WPM_BAR_MAX   70   // «100%» для шкалы (подстройте под себя)
-#define WPM_BAR_COLS  5    // ширина полоски внутри скобок
+#define WPM_BAR_MAX   70
+#define WPM_BAR_COLS  5
 
 static void oled_render_wpm(void) {
     uint8_t wpm = get_current_wpm();
 
-    // Метка
     oled_set_cursor(1, 8);
     oled_write_P(PSTR("WPM"), false);
 
-    // Три цифры WPM
     char num[4];
     snprintf(num, sizeof(num), "%03u", wpm);
 
-    // Сколько "клеток" заполняем
     uint8_t capped = (wpm > WPM_BAR_MAX) ? WPM_BAR_MAX : wpm;
     uint8_t filled = (uint8_t)((uint32_t)capped * WPM_BAR_COLS / WPM_BAR_MAX);
 
-    // 1) Полоска без скобок, символ 0xA4 = "полная заливка"
     oled_set_cursor(0, 9);
     for (uint8_t i = 0; i < WPM_BAR_COLS; i++) {
         oled_write_char((i < filled) ? (char)0xA4 : ' ', false);
     }
 
-    // 2) Поверх — цифры; если цифра попадает на заливку -> инвертируем (чёрная на белом)
-    const uint8_t num_col0 = 1;   // стартовая колонка числа (можно сдвинуть/центрировать)
+    const uint8_t num_col0 = 1;
     for (uint8_t i = 0; i < 3; i++) {
-        bool overlap = (i < filled);                // т.к. число начинается с той же колонки
+        bool overlap = (i < filled);
         oled_set_cursor(num_col0 + i, 9);
-        oled_write_char(num[i], overlap);           // overlap==true -> инвертированная цифра
+        oled_write_char(num[i], overlap);
     }
 }
 
