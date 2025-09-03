@@ -5,7 +5,7 @@
 #include "wpm.h"
 #include <stdio.h>
 
-oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (!is_keyboard_master()) {
         return OLED_ROTATION_180; // flips the display 180 degrees if offhand
     }
@@ -206,10 +206,7 @@ static void render_rgb_params_line(void) {
     }
 }
 
-bool oled_task_kb(void) {
-    if (!oled_task_user()) {
-        return false;
-    }
+bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_layer_state();
         oled_render_wpm();
