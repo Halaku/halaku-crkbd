@@ -12,7 +12,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clone vial-qmk
-        run: git clone --depth 1 https://github.com/vial-kb/vial-qmk.git vial-qmk
+        run: |
+          git clone --depth 1 https://github.com/vial-kb/vial-qmk.git vial-qmk
+          cd vial-qmk
+          git submodule update --init --recursive
+
 
       - name: Copy all files except .github to vial-qmk keymap
         run: |
