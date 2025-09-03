@@ -1,6 +1,10 @@
-name: Build Vial-QMK firmware for RP2040
+name: Build and Release Vial-QMK Firmware for RP2040
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,7 +21,6 @@ jobs:
           cd vial-qmk
           git submodule update --init --recursive
 
-
       - name: Copy all files except .github to vial-qmk keymap
         run: |
           mkdir -p vial-qmk/keyboards/crkbd/keymaps/halaku-crkbd
@@ -32,8 +35,22 @@ jobs:
           cd vial-qmk
           qmk compile -c -kb crkbd/rev1 -km halaku-crkbd -e CONVERT_TO=elite_pi
 
-      - name: Upload firmware
+      - name: Prepare firmware artifact
+        run: |
+          mkdir -p artifact
+          cp vial-qmk/.build/crkbd_rev1_halaku-crkbd_elite_pi.uf2 artifact/
+
+      - name: Upload firmware as workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: firmware_rp2040
-          path: vial-qmk/.build/crkbd_rev1_halaku-crkbd_elite_pi.uf2
+          path: artifact/crkbd_rev1_halaku-crkbd_elite_pi.uf2
+
+      - name: Create or update GitHub Release and upload firmware
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Latest Firmware"
+          tag_name: "latest"
+          files: artifact/crkbd_rev1_halaku-crkbd_elite_pi.uf2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
